@@ -60,4 +60,21 @@ router.post("/login", async (req, res) => {
   }
 });
 
+exports.admin = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+  const admin = await this.admin.findOne({ email }).select("+password");
+  if (!admin) {
+    return next(new ErrorResponse("Invalid Credential", 401));
+  }
+  const isMatch = await admin.verifypass(password);
+  if (!isMatch) {
+    return next(new ErrorResponse("Invalid Credentials", 401));
+  }
+  const token = await admin.getToken();
+  res.status(201).json({
+    success: true,
+    token,
+  });
+});
+
 module.exports = router;
