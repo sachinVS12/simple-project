@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
     },
     topics: {
       type: [String],
-      required: [ture],
+      default: [ture],
     },
     company: {
       type: mongoose.Schema.types.objectId,
@@ -27,11 +27,11 @@ const userSchema = new mongoose.Schema(
     },
     favorates: {
       type: String,
-      required: [],
+      default: [],
     },
     graphwl: {
       type: String,
-      required: [],
+      default: [],
     },
     passwords: {
       type: String,
