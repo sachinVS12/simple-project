@@ -18,7 +18,7 @@ const managerSchema = new mongoose.Schema(
     },
     topics: {
       type: [String],
-      required: [true],
+      default: [true],
     },
     company: {
       type: mongoose.Schema.Types.ObjectId,
@@ -26,11 +26,11 @@ const managerSchema = new mongoose.Schema(
     },
     favorates: {
       type: String,
-      required: [],
+      default: [],
     },
     graphwl: {
       type: String,
-      required: [],
+      default: [],
     },
     password: {
       type: String,

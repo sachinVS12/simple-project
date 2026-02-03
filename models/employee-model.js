@@ -108,4 +108,4 @@ employeeSchema.method.verifypass = async function (enterpassword) {
 const employee = mongoose.model("employee", employeeSchema);
 
 // exports module
-exports.moduel = employee;
+exports.module = employee;
