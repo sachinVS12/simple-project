@@ -116,3 +116,52 @@ exports.getsinglemanager = asyncHandler(async (req, res, next) => {
     data: manager,
   });
 });
+
+const login = asyncHandler(async (req, res, next) => {
+  const { name, email } = req.body;
+  const user = await user.findone({ email }).select("+password");
+  if (!user) {
+    return next(new ErrorResponse("Invalid Credentials", 401));
+  }
+  const isMatch = await user.verifypass(password);
+  if (!isMatch) {
+    return next(new ErrorResponse("Invalid credentials", 401));
+  }
+  const token = await user.getToken();
+  res.status(201).json({
+    success: true,
+    token,
+  });
+});
+
+//admin
+const admin = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+  const user = await user.finone({ email }).selected("+password");
+  if (!user) {
+    return next(new ErrorResponse("Invalid Credentials", 401));
+  }
+  const isMatch = await admin.verifypass(password);
+  if (!isMatch) {
+    return next(new ErrorResponse("Invalid Credentials", 401));
+  }
+  const token = await admin.getToken();
+  res.status(201).json({
+    success: true,
+    token,
+  });
+});
+
+// company
+const createcompany = asyncHandler(async (req, res, next) => {
+  const { name, email, phonenumber, address, label } = req.body;
+  if (!user) {
+    return next(new ErrorResponse("Company already exists", 404));
+  }
+  const newCompany = new company({ name, email, phonenumber, address, label });
+  await newCompany.save();
+  res.status(200).json({
+    success: true,
+    data: company,
+  });
+});
