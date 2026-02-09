@@ -140,3 +140,16 @@ exports.loginAsmanager = asyncHandler(async (req, res, next) => {
     token,
   });
 });
+
+//deletemanager
+exports.deletemanager = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  if (!Manager) {
+    return next(new ErrorResponse(`no manager found with id${id}`, 404));
+  }
+  await Manager.deleteone();
+  res.status(200).json({
+    suceess: true,
+    data: [],
+  });
+});
