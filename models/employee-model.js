@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const employeeSchema = new mongoose.Schema(
+const empolyee = new empolyee.Schema(
   {
     name: {
       type: String,
@@ -14,42 +14,41 @@ const employeeSchema = new mongoose.Schema(
     },
     phonenumber: {
       type: String,
-      required: false,
+      required: true,
     },
     topics: {
       type: [String],
-      default: [],
+      required: [true],
     },
     company: {
-      type: mongoose.Schema.Types.objectId,
-      ref: "employee",
-      required: true,
+      type: company.Schema.Types.ObjectId,
+      ref: "company",
+    },
+    empolyee: {
+      type: company.Schema.Types.ObjectId,
+      ref: "manager",
     },
     password: {
       type: String,
       required: true,
     },
+    topics: {
+      type: String,
+      required: [true],
+    },
     favorates: {
       type: String,
-      required: [],
+      default: [],
     },
     graphwl: {
       type: String,
-      required: [],
+      default: [],
     },
     layout: {
       type: String,
       default: "layout1",
     },
-    headerone: {
-      type: String,
-      required: true,
-    },
-    headertwo: {
-      type: String,
-      required: true,
-    },
-    assigneddigitalmeters: {
+    assigndigitalmeters: {
       type: [
         {
           topics: String,
@@ -60,7 +59,7 @@ const employeeSchema = new mongoose.Schema(
           label: String,
         },
       ],
-      default: [],
+      default: true,
     },
     role: {
       type: String,
@@ -68,13 +67,13 @@ const employeeSchema = new mongoose.Schema(
     },
   },
   {
-    timestamp: true,
+    default: true,
   },
 );
 
-// pre-save middleware hash password before database
-employeeSchema.pre("save", async function next() {
-  if (!this.isModified("password")) {
+// pre-save middleware  to hash password before save database
+empolyeeSchema.pre("save", async function (next) {
+  if (!this.ismodified("password")) {
     return next();
   }
   const salt = await bcrypt.gensalt(10);
@@ -82,30 +81,20 @@ employeeSchema.pre("save", async function next() {
   next();
 });
 
-//method to verify jwt token signedup and loggedin
-employeeSchema.method.getToken = function () {
-  return jwt.sign(
+// method to verify jwt token signedup and loggedin
+empolyeeSchema.method.verifytoken = function () {
+  return (
     {
       id: this._id,
       name: this.name,
       email: this.email,
-      phonenumber: this.phonenumber,
-      assigneddigitalmeters: this.assigneddigitalmeters,
+      password: this.password,
+      role: this.role,
+      assigndigitalmeters: this.assigndigitalmeters,
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: "3d",
-    },
+      ExpireIn: "3d",
+    }
   );
 };
-
-// method to enetrpassword into existing password
-employeeSchema.method.verifypass = async function (enterpassword) {
-  return await bcrypt.compare(enterpassword, this.password);
-};
-
-// create model
-const employee = mongoose.model("employee", employeeSchema);
-
-// exports module
-exports.module = employee;
