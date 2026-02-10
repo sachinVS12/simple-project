@@ -41,42 +41,7 @@ exports.admin = asyncHandler(async (req, res, next) => {
   });
 });
 
-// login
-exports.admin = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
-  const user = await user.findOne({ email }).select("+password");
-  if (!user) {
-    return next(new ErrorResponse("Invalid Credentials", 401));
-  }
-  const isMatch = await verifypass(password);
-  if (!isMatch) {
-    return next(new ErrorResponse("Invalid Credentials", 401));
-  }
-  const token = await user.getToken();
-  res.status(200).json({
-    success: true,
-    token,
-  });
-});
-
-//admin
-exports.admin = asyncHandler(async (req, res, next) => {
-  const { name, email } = req.body;
-  const user = await user.findOne({ email }).select("+password");
-  if (!this.admin) {
-    return next(new ErrorResponse("Invalid credential", 401));
-  }
-  const isMatch = await verifypass(password);
-  if (!isMatch) {
-    return next(new ErrorResponse("Invalid credentials", 401));
-  }
-  const token = await this.admin.getToken();
-  res.status(200).json({
-    success: true,
-    token,
-  });
-});
-
+// create company
 const company = asyncHandler(async (req, res, next) => {
   const { name, email, password, label, address } = req.body;
   const company = await company.findone(name);
@@ -120,7 +85,7 @@ exports.deleteCompany = asyncHandler(async (req, res, next) => {
   });
 });
 
-//managerlogin
+// managerlogin
 exports.loginAsmanager = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await Manager.findOne({ email })
@@ -141,7 +106,7 @@ exports.loginAsmanager = asyncHandler(async (req, res, next) => {
   });
 });
 
-//deletemanager
+// deletemanager
 exports.deletemanager = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   if (!Manager) {
