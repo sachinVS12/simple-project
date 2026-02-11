@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = required("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -12,26 +12,25 @@ const managerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phoneNumber: {
+    phonenumbers: {
       type: String,
-      required: false,
+      required: true,
     },
     topics: {
-      type: [String],
+      type: String,
       required: [],
     },
     company: {
-      type: mongoose.Schema.types.objectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "company",
-      defalut: true,
     },
     favorates: {
       type: String,
-      default: [],
+      required: [],
     },
     graphwl: {
       type: String,
-      default: [],
+      required: [],
     },
     password: {
       type: String,
@@ -41,18 +40,18 @@ const managerSchema = new mongoose.Schema(
       type: String,
       default: "layout1",
     },
-    asigneddigitaltopics: {
+    assigneddigitalmeters: {
       type: [
         {
           topics: String,
           metertype: String,
           minvalue: Number,
           maxvalue: Number,
-          tick: String,
-          label: Number,
+          tick: Number,
+          label: String,
         },
       ],
-      default: true,
+      default: [],
     },
     role: {
       type: String,
@@ -64,7 +63,7 @@ const managerSchema = new mongoose.Schema(
   },
 );
 
-// pre-save middleware hash password berfore save datbase
+//pre-save middleware hash password before save database
 managerSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -74,24 +73,21 @@ managerSchema.pre("save", async function (next) {
   next();
 });
 
-// method toverify jwt token signedup and loggedin
+// method to verify jwt token signedup and loggedin
 managerSchema.method.getToken = function () {
-  return (
-    jwt >
-    sign(
-      {
-        id: this.id,
-        name: this.name,
-        email: this.email,
-        phoneNumber: this.phoneNumber,
-        role: this.role,
-        assigneddigitaltopics: this.asigneddigitaltopics,
-      },
-      process.env.JWT_SECRET,
-      {
-        expirIn: "3d",
-      },
-    )
+  return jwt.sign(
+    {
+      id: this._id,
+      name: this.name,
+      email: this.email,
+      password: this.password,
+      role: this.role,
+      assigneddigitalmeters: this.assigneddigitalmeters,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "3d",
+    },
   );
 };
 
@@ -100,8 +96,8 @@ managerSchema.method.verifypass = async function (enterpassword) {
   return await bcrypt.compare(enterpassword, this.password);
 };
 
-//cretae to database
-const manager = mongoose.model("manger", managerSchema);
+// create the model
+const manager = mongoose.model("manager", managerSchema);
 
-//exports the module
-exports.module = manager;
+// exports module
+module.exports = manager;
